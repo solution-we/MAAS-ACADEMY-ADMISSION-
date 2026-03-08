@@ -2,9 +2,8 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Admission Form</title>
 
@@ -21,7 +20,7 @@ justify-content:center;
 
 .container{
 width:100%;
-max-width:700px;
+max-width:650px;
 }
 
 .logo{
@@ -40,7 +39,7 @@ letter-spacing:1px;
 label{
 font-weight:600;
 display:block;
-margin-top:18px;
+margin-top:20px;
 }
 
 input,textarea{
@@ -57,18 +56,25 @@ height:90px;
 resize:none;
 }
 
+/* option list */
+
 .options{
+margin-top:10px;
 display:flex;
-flex-wrap:wrap;
-gap:15px;
-margin-top:8px;
+flex-direction:column;
+gap:8px;
 }
 
-.options label{
-font-weight:normal;
+.option{
 display:flex;
 align-items:center;
-gap:6px;
+gap:10px;
+font-weight:400;
+}
+
+.option input{
+width:16px;
+height:16px;
 }
 
 button{
@@ -83,27 +89,11 @@ font-size:16px;
 cursor:pointer;
 }
 
-button:hover{
-background:#222;
-}
-
 .success{
 text-align:center;
 margin-top:18px;
 color:green;
 font-weight:600;
-}
-
-@media(max-width:500px){
-
-body{
-padding:15px;
-}
-
-.options{
-gap:10px;
-}
-
 }
 
 </style>
@@ -121,10 +111,10 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 
 <form id="form">
 
-<label>1. Name of the Student</label>
+<label>Name of the Student</label>
 <input type="text" id="student" required>
 
-<label>2. Name of Parent</label>
+<label>Name of Parent</label>
 
 <label>Father</label>
 <input type="text" id="father">
@@ -132,49 +122,66 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 <label>Mother</label>
 <input type="text" id="mother">
 
-<label>3. Contact No.</label>
+<label>Contact No.</label>
 <input type="tel" pattern="[0-9]*" inputmode="numeric" id="contact" required>
 
-<label>4. Whatsapp No.</label>
+<label>Whatsapp No.</label>
 <input type="tel" pattern="[0-9]*" inputmode="numeric" id="whatsapp" required>
 
-<label>5. Address</label>
+<label>Address</label>
 <textarea id="address"></textarea>
 
-<label>6. Class</label>
-
-<div class="options">
-<label><input type="radio" name="class" value="8"> 8</label>
-<label><input type="radio" name="class" value="9"> 9</label>
-<label><input type="radio" name="class" value="SSLC"> SSLC</label>
-</div>
-
-<label>7. Tough Subjects</label>
+<label>Class</label>
 
 <div class="options">
 
-<label><input type="checkbox" value="English"> English</label>
-<label><input type="checkbox" value="Physics"> Physics</label>
-<label><input type="checkbox" value="Chemistry"> Chemistry</label>
-<label><input type="checkbox" value="Biology"> Biology</label>
-<label><input type="checkbox" value="Maths"> Maths</label>
-<label><input type="checkbox" value="Arabic"> Arabic</label>
-<label><input type="checkbox" value="Malayalam"> Malayalam</label>
-<label><input type="checkbox" value="Hindi"> Hindi</label>
-<label><input type="checkbox" value="Social Science"> Social Science</label>
-<label><input type="checkbox" value="History"> History</label>
-<label><input type="checkbox" value="Geography"> Geography</label>
+<label class="option">
+<input type="radio" name="class" value="8"> 8
+</label>
+
+<label class="option">
+<input type="radio" name="class" value="9"> 9
+</label>
+
+<label class="option">
+<input type="radio" name="class" value="SSLC"> SSLC
+</label>
 
 </div>
 
-<label>8. School</label>
+<label>Tough Subjects</label>
+
+<div class="options">
+
+<label class="option"><input type="checkbox" value="English"> English</label>
+<label class="option"><input type="checkbox" value="Physics"> Physics</label>
+<label class="option"><input type="checkbox" value="Chemistry"> Chemistry</label>
+<label class="option"><input type="checkbox" value="Biology"> Biology</label>
+<label class="option"><input type="checkbox" value="Maths"> Maths</label>
+<label class="option"><input type="checkbox" value="Arabic"> Arabic</label>
+<label class="option"><input type="checkbox" value="Malayalam"> Malayalam</label>
+<label class="option"><input type="checkbox" value="Hindi"> Hindi</label>
+<label class="option"><input type="checkbox" value="Social Science"> Social Science</label>
+<label class="option"><input type="checkbox" value="History"> History</label>
+<label class="option"><input type="checkbox" value="Geography"> Geography</label>
+
+</div>
+
+<label>School</label>
 <input type="text" id="school">
 
-<label>9. Medium</label>
+<label>Medium</label>
 
 <div class="options">
-<label><input type="radio" name="medium" value="English"> English</label>
-<label><input type="radio" name="medium" value="Malayalam"> Malayalam</label>
+
+<label class="option">
+<input type="radio" name="medium" value="English"> English
+</label>
+
+<label class="option">
+<input type="radio" name="medium" value="Malayalam"> Malayalam
+</label>
+
 </div>
 
 <button type="submit">Submit Application</button>
@@ -184,65 +191,6 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 <div id="msg" class="success"></div>
 
 </div>
-
-<script>
-
-const BIN_ID="69ad0adfae596e708f6bc41c"
-const API_KEY="$2a$10$lkC4kFk7MhlaZnTHLacshec/q7QUG/xWMYEY07VpodWh7CjxIsQdy"
-
-document.getElementById("form").addEventListener("submit",async e=>{
-
-e.preventDefault()
-
-const subjects=[]
-document.querySelectorAll('input[type=checkbox]:checked')
-.forEach(el=>subjects.push(el.value))
-
-const data={
-
-student:document.getElementById("student").value,
-father:document.getElementById("father").value,
-mother:document.getElementById("mother").value,
-contact:document.getElementById("contact").value,
-whatsapp:document.getElementById("whatsapp").value,
-address:document.getElementById("address").value,
-class:document.querySelector('input[name="class"]:checked')?.value,
-subjects:subjects,
-school:document.getElementById("school").value,
-medium:document.querySelector('input[name="medium"]:checked')?.value,
-time:new Date().toLocaleString()
-
-}
-
-const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{
-headers:{"X-Master-Key":API_KEY}
-})
-
-const json=await res.json()
-
-const records=json.record.applications||[]
-
-records.push(data)
-
-await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
-
-method:"PUT",
-headers:{
-"Content-Type":"application/json",
-"X-Master-Key":API_KEY
-},
-
-body:JSON.stringify({applications:records})
-
-})
-
-document.getElementById("msg").innerText="Application Submitted Successfully"
-
-document.getElementById("form").reset()
-
-})
-
-</script>
 
 </body>
 </html>
