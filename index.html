@@ -2,53 +2,76 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Admission Form</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
 
+*{
+box-sizing:border-box;
+}
+
 body{
-font-family:system-ui;
+font-family:'Poppins',sans-serif;
 background:white;
 margin:0;
-padding:25px;
-display:flex;
-justify-content:center;
+padding:20px;
 }
 
 .container{
-width:100%;
 max-width:650px;
+margin:auto;
+width:100%;
 }
 
 .logo{
 display:block;
 margin:auto;
-max-width:220px;
+max-width:200px;
+margin-bottom:10px;
 }
 
-h2{
+/* headings */
+
+.year{
 text-align:center;
-margin-top:10px;
-margin-bottom:30px;
+font-size:24px;
+font-weight:700;
 letter-spacing:1px;
+white-space:nowrap;
 }
 
-label{
+.sub{
+text-align:center;
+font-size:18px;
+font-weight:600;
+margin-bottom:30px;
+color:#555;
+}
+
+label.title{
 font-weight:600;
 display:block;
 margin-top:20px;
+margin-bottom:6px;
 }
 
-input,textarea{
+/* inputs */
+
+input[type=text],
+input[type=tel],
+textarea{
 width:100%;
-padding:10px;
-margin-top:6px;
+padding:12px;
 border:1px solid #ddd;
 border-radius:6px;
 font-size:14px;
+display:block;
 }
 
 textarea{
@@ -56,31 +79,34 @@ height:90px;
 resize:none;
 }
 
-/* option list */
+/* option layout */
 
 .options{
 margin-top:10px;
 display:flex;
 flex-direction:column;
-gap:8px;
+gap:10px;
 }
 
 .option{
 display:flex;
 align-items:center;
 gap:10px;
-font-weight:400;
+font-size:15px;
 }
 
 .option input{
-width:16px;
-height:16px;
+flex:none;
+width:18px;
+height:18px;
 }
+
+/* button */
 
 button{
 margin-top:30px;
 width:100%;
-padding:13px;
+padding:14px;
 border:none;
 border-radius:6px;
 background:black;
@@ -89,11 +115,18 @@ font-size:16px;
 cursor:pointer;
 }
 
+button:hover{
+background:#222;
+}
+
+.hidden{
+display:none;
+}
+
 .success{
 text-align:center;
 margin-top:18px;
 color:green;
-font-weight:600;
 }
 
 </style>
@@ -107,31 +140,30 @@ font-weight:600;
 <img class="logo"
 src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted-images/converted_1772948540637_n97ywh.png">
 
-<h2>ADMISSION FORM</h2>
+<div class="year">ACADEMIC YEAR 2026-27</div>
+<div class="sub">Admission Form</div>
 
 <form id="form">
 
-<label>Name of the Student</label>
+<label class="title">Name of the Student</label>
 <input type="text" id="student" required>
 
-<label>Name of Parent</label>
-
-<label>Father</label>
+<label class="title">Father</label>
 <input type="text" id="father">
 
-<label>Mother</label>
+<label class="title">Mother</label>
 <input type="text" id="mother">
 
-<label>Contact No.</label>
-<input type="tel" pattern="[0-9]*" inputmode="numeric" id="contact" required>
+<label class="title">Contact No.</label>
+<input type="tel" id="contact" required>
 
-<label>Whatsapp No.</label>
-<input type="tel" pattern="[0-9]*" inputmode="numeric" id="whatsapp" required>
+<label class="title">Whatsapp No.</label>
+<input type="tel" id="whatsapp" required>
 
-<label>Address</label>
+<label class="title">Address</label>
 <textarea id="address"></textarea>
 
-<label>Class</label>
+<label class="title">Class</label>
 
 <div class="options">
 
@@ -149,7 +181,9 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 
 </div>
 
-<label>Tough Subjects</label>
+<div id="subjectsSection" class="hidden">
+
+<label class="title">Tough Subjects</label>
 
 <div class="options">
 
@@ -161,16 +195,27 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 <label class="option"><input type="checkbox" value="Arabic"> Arabic</label>
 <label class="option"><input type="checkbox" value="Malayalam"> Malayalam</label>
 <label class="option"><input type="checkbox" value="Hindi"> Hindi</label>
-<label class="option"><input type="checkbox" value="Social Science"> Social Science</label>
-<label class="option"><input type="checkbox" value="History"> History</label>
-<label class="option"><input type="checkbox" value="Geography"> Geography</label>
+
+<label class="option subject-social">
+<input type="checkbox" value="Social Science"> Social Science
+</label>
+
+<label class="option subject-history">
+<input type="checkbox" value="History"> History
+</label>
+
+<label class="option subject-geo">
+<input type="checkbox" value="Geography"> Geography
+</label>
 
 </div>
 
-<label>School</label>
+</div>
+
+<label class="title">School</label>
 <input type="text" id="school">
 
-<label>Medium</label>
+<label class="title">Medium</label>
 
 <div class="options">
 
@@ -192,5 +237,38 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 
 </div>
 
+<script>
+
+const subjectSection=document.getElementById("subjectsSection")
+
+const history=document.querySelector(".subject-history")
+const geo=document.querySelector(".subject-geo")
+const social=document.querySelector(".subject-social")
+
+document.querySelectorAll('input[name="class"]').forEach(el=>{
+
+el.addEventListener("change",()=>{
+
+subjectSection.classList.remove("hidden")
+
+history.style.display="flex"
+geo.style.display="flex"
+social.style.display="flex"
+
+if(el.value==="8"){
+history.style.display="none"
+geo.style.display="none"
+}
+
+if(el.value==="9" || el.value==="SSLC"){
+social.style.display="none"
+}
+
+})
+
+})
+
+</script>
+
 </body>
-</html>
+  </html>
