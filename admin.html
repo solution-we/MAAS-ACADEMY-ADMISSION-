@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Admin Dashboard</title>
+
+<style>
+
+body{
+font-family:system-ui;
+background:#f6f6f6;
+padding:30px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+}
+
+h2{
+margin-top:35px;
+border-bottom:2px solid #ddd;
+padding-bottom:5px;
+}
+
+.student{
+display:block;
+padding:8px 0;
+text-decoration:none;
+color:#222;
+font-size:16px;
+}
+
+.student:hover{
+color:#007bff;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Applications</h1>
+
+<div id="class8"></div>
+<div id="class9"></div>
+<div id="class10"></div>
+
+</div>
+
+<script>
+
+const BIN_ID="69ad0adfae596e708f6bc41c"
+const API_KEY="$2a$10$lkC4kFk7MhlaZnTHLacshec/q7QUG/xWMYEY07VpodWh7CjxIsQdy"
+
+async function load(){
+
+const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{
+headers:{ "X-Master-Key":API_KEY }
+})
+
+const json=await res.json()
+
+const list=json.record.applications || []
+
+const class8=[]
+const class9=[]
+const class10=[]
+
+list.forEach((student,index)=>{
+
+if(student.class=="8") class8.push({student,index})
+if(student.class=="9") class9.push({student,index})
+if(student.class=="SSLC") class10.push({student,index})
+
+})
+
+render("class8","Class 8",class8)
+render("class9","Class 9",class9)
+render("class10","Class 10",class10)
+
+}
+
+function render(id,title,data){
+
+const el=document.getElementById(id)
+
+let html=`<h2>${title}</h2>`
+
+data.forEach(item=>{
+
+html+=`<a class="student" href="view.html?id=${item.index}">
+${item.student.student}
+</a>`
+
+})
+
+el.innerHTML=html
+
+}
+
+load()
+
+</script>
+
+</body>
+</html>
