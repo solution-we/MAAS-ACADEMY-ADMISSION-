@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Admission Form</title>
+<title>MAAS Admission Form</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -26,7 +26,6 @@ padding:20px;
 .container{
 max-width:650px;
 margin:auto;
-width:100%;
 }
 
 .logo{
@@ -35,8 +34,6 @@ margin:auto;
 max-width:200px;
 margin-bottom:10px;
 }
-
-/* headings */
 
 .year{
 text-align:center;
@@ -50,36 +47,31 @@ white-space:nowrap;
 text-align:center;
 font-size:18px;
 font-weight:600;
-margin-bottom:30px;
 color:#555;
+margin-bottom:30px;
 }
 
 label.title{
-font-weight:600;
 display:block;
-margin-top:20px;
-margin-bottom:6px;
+margin-top:18px;
+font-weight:600;
 }
-
-/* inputs */
 
 input[type=text],
 input[type=tel],
 textarea{
 width:100%;
 padding:12px;
+margin-top:6px;
 border:1px solid #ddd;
 border-radius:6px;
 font-size:14px;
-display:block;
 }
 
 textarea{
 height:90px;
 resize:none;
 }
-
-/* option layout */
 
 .options{
 margin-top:10px;
@@ -96,12 +88,9 @@ font-size:15px;
 }
 
 .option input{
-flex:none;
 width:18px;
 height:18px;
 }
-
-/* button */
 
 button{
 margin-top:30px;
@@ -124,9 +113,10 @@ display:none;
 }
 
 .success{
+margin-top:20px;
 text-align:center;
-margin-top:18px;
 color:green;
+font-weight:600;
 }
 
 </style>
@@ -149,26 +139,26 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 <input type="text" id="student" required>
 
 <label class="title">Father</label>
-<input type="text" id="father">
+<input type="text" id="father" required>
 
 <label class="title">Mother</label>
-<input type="text" id="mother">
+<input type="text" id="mother" required>
 
 <label class="title">Contact No.</label>
-<input type="tel" id="contact" required>
+<input type="tel" id="contact" required pattern="[0-9]{10}">
 
 <label class="title">Whatsapp No.</label>
-<input type="tel" id="whatsapp" required>
+<input type="tel" id="whatsapp" required pattern="[0-9]{10}">
 
 <label class="title">Address</label>
-<textarea id="address"></textarea>
+<textarea id="address" required></textarea>
 
 <label class="title">Class</label>
 
 <div class="options">
 
 <label class="option">
-<input type="radio" name="class" value="8"> 8
+<input type="radio" name="class" value="8" required> 8
 </label>
 
 <label class="option">
@@ -181,11 +171,12 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 
 </div>
 
+
 <div id="subjectsSection" class="hidden">
 
 <label class="title">Tough Subjects</label>
 
-<div class="options">
+<div class="options" id="subjects">
 
 <label class="option"><input type="checkbox" value="English"> English</label>
 <label class="option"><input type="checkbox" value="Physics"> Physics</label>
@@ -213,14 +204,14 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 </div>
 
 <label class="title">School</label>
-<input type="text" id="school">
+<input type="text" id="school" required>
 
 <label class="title">Medium</label>
 
 <div class="options">
 
 <label class="option">
-<input type="radio" name="medium" value="English"> English
+<input type="radio" name="medium" value="English" required> English
 </label>
 
 <label class="option">
@@ -237,10 +228,13 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 
 </div>
 
+
 <script>
 
-const subjectSection=document.getElementById("subjectsSection")
+const BIN_ID="69ad0adfae596e708f6bc41c"
+const API_KEY="$2a$10$lkC4kFk7MhlaZnTHLacshec/q7QUG/xWMYEY07VpodWh7CjxIsQdy"
 
+const subjectSection=document.getElementById("subjectsSection")
 const history=document.querySelector(".subject-history")
 const geo=document.querySelector(".subject-geo")
 const social=document.querySelector(".subject-social")
@@ -268,7 +262,68 @@ social.style.display="none"
 
 })
 
+const form=document.getElementById("form")
+const msg=document.getElementById("msg")
+
+form.addEventListener("submit",async function(e){
+
+e.preventDefault()
+
+try{
+
+const subjects=[]
+document.querySelectorAll('#subjects input:checked')
+.forEach(el=>subjects.push(el.value))
+
+const data={
+student:document.getElementById("student").value,
+father:document.getElementById("father").value,
+mother:document.getElementById("mother").value,
+contact:document.getElementById("contact").value,
+whatsapp:document.getElementById("whatsapp").value,
+address:document.getElementById("address").value,
+class:document.querySelector('input[name="class"]:checked').value,
+subjects:subjects,
+school:document.getElementById("school").value,
+medium:document.querySelector('input[name="medium"]:checked').value,
+time:new Date().toLocaleString()
+}
+
+const get=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{
+headers:{ "X-Master-Key":API_KEY }
+})
+
+const json=await get.json()
+
+const records=json.record.applications || []
+
+records.push(data)
+
+await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
+method:"PUT",
+headers:{
+"Content-Type":"application/json",
+"X-Master-Key":API_KEY,
+"X-Bin-Versioning":"false"
+},
+body:JSON.stringify({applications:records})
+})
+
+msg.innerText="Application Submitted Successfully"
+
+form.reset()
+
+subjectSection.classList.add("hidden")
+
+}catch(err){
+
+msg.innerText="Submission failed. Please try again."
+
+}
+
+})
+
 </script>
 
 </body>
-  </html>
+</html>
