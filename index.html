@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-
 *{box-sizing:border-box;}
 
 body{
@@ -111,7 +110,6 @@ text-align:center;
 color:green;
 font-weight:600;
 }
-
 </style>
 </head>
 
@@ -187,9 +185,7 @@ const API_KEY="$2a$10$lkC4kFk7MhlaZnTHLacshec/q7QUG/xWMYEY07VpodWh7CjxIsQdy"
 const subjectSection=document.getElementById("subjectsSection")
 const subjectsDiv=document.getElementById("subjects")
 
-// SUBJECTS
 const subjectsData={
-"UP":["Social Science","Basic Science","English","Malayalam","Arabic","Hindi","Maths"],
 "8":["Social Science","Basic Science","English","Malayalam","Arabic","Hindi","Maths"],
 "9":["English","Physics","Chemistry","Biology","Maths","Hindi","Arabic","Malayalam"],
 "SSLC":["English","Physics","Chemistry","Biology","Maths","Hindi","Arabic","Malayalam"]
@@ -198,10 +194,18 @@ const subjectsData={
 document.querySelectorAll('input[name="class"]').forEach(el=>{
 el.addEventListener("change",()=>{
 
+const selected=el.value
+
+// 🔥 If UP → hide subjects completely
+if(selected==="UP"){
+subjectSection.classList.add("hidden")
+subjectsDiv.innerHTML=""
+return
+}
+
+// show subjects for others
 subjectSection.classList.remove("hidden")
 subjectsDiv.innerHTML=""
-
-const selected=el.value
 
 subjectsData[selected].forEach(sub=>{
 subjectsDiv.innerHTML+=`
@@ -266,4 +270,4 @@ subjectSection.classList.add("hidden")
 </script>
 
 </body>
-</html>
+  </html>
