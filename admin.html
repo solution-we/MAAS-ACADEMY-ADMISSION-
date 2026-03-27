@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -35,6 +34,174 @@ padding:12px;
 border-radius:10px;
 border:1px solid #ddd;
 margin-bottom:20px;
+}
+
+.class-title{
+margin-top:30px;
+font-weight:600;
+color:#333;
+}
+
+.student-card{
+background:white;
+padding:14px 18px;
+border-radius:14px;
+margin-top:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
+
+.student-name{
+font-weight:500;
+}
+
+.actions{
+display:flex;
+gap:8px;
+}
+
+.btn{
+border:none;
+padding:6px 10px;
+border-radius:8px;
+cursor:pointer;
+font-size:12px;
+}
+
+.view{background:#e8f0ff;}
+.whatsapp{background:#e8ffe8;}
+.delete{background:#ffe8e8;}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Student Applications</h1>
+
+<input class="search" placeholder="Search student..." id="search">
+
+<div id="list"></div>
+
+</div>
+
+<script>
+
+const BIN_ID="69ad0adfae596e708f6bc41c"
+const API_KEY="$2a$10$lkC4kFk7MhlaZnTHLacshec/q7QUG/xWMYEY07VpodWh7CjxIsQdy"
+
+let students=[]
+
+async function load(){
+
+const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{
+headers:{ "X-Master-Key":API_KEY }
+})
+
+const json=await res.json()
+
+students=json.record.applications || []
+
+render()
+
+}
+
+function render(filter=""){
+
+const list=document.getElementById("list")
+
+const classUP=students.filter(s=>s.class==="UP")
+const class8=students.filter(s=>s.class==="8")
+const class9=students.filter(s=>s.class==="9")
+const class10=students.filter(s=>s.class==="SSLC")
+
+list.innerHTML=""
+
+createSection("UP",classUP,filter)
+createSection("Class 8",class8,filter)
+createSection("Class 9",class9,filter)
+createSection("SSLC",class10,filter)
+
+}
+
+function createSection(title,data,filter){
+
+const list=document.getElementById("list")
+
+const section=document.createElement("div")
+
+section.innerHTML=`<div class="class-title">${title}</div>`
+
+data.forEach((student)=>{
+
+if(!student.student.toLowerCase().includes(filter.toLowerCase())) return
+
+const index=students.indexOf(student)
+
+const card=document.createElement("div")
+card.className="student-card"
+
+card.innerHTML=`
+<div class="student-name">${student.student}</div>
+
+<div class="actions">
+<button class="btn view" onclick="view(${index})">View</button>
+<button class="btn whatsapp" onclick="whatsapp('${student.whatsapp}')">WhatsApp</button>
+<button class="btn delete" onclick="remove(${index})">Delete</button>
+</div>
+`
+
+section.appendChild(card)
+
+})
+
+list.appendChild(section)
+
+}
+
+function view(id){
+window.location="view.html?id="+id
+}
+
+function whatsapp(num){
+window.open("https://wa.me/91"+num)
+}
+
+async function remove(id){
+
+if(!confirm("Delete this application?")) return
+
+students.splice(id,1)
+
+await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
+method:"PUT",
+headers:{
+"Content-Type":"application/json",
+"X-Master-Key":API_KEY,
+"X-Bin-Versioning":"false"
+},
+body:JSON.stringify({applications:students})
+})
+
+render()
+
+}
+
+document.getElementById("search").addEventListener("input",e=>{
+render(e.target.value)
+})
+
+load()
+
+</script>
+
+</body>
+</html>margin-bottom:20px;
 }
 
 .class-title{
