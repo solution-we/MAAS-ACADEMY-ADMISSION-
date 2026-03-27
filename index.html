@@ -2,19 +2,15 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>MAAS Admission Form</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-*{
-box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body{
 font-family:'Poppins',sans-serif;
@@ -39,8 +35,6 @@ margin-bottom:10px;
 text-align:center;
 font-size:24px;
 font-weight:700;
-letter-spacing:1px;
-white-space:nowrap;
 }
 
 .sub{
@@ -77,19 +71,18 @@ resize:none;
 margin-top:10px;
 display:flex;
 flex-direction:column;
-gap:10px;
+gap:12px;
 }
 
 .option{
 display:flex;
 align-items:center;
 gap:10px;
-font-size:15px;
+justify-content:flex-start;
 }
 
 .option input{
-width:18px;
-height:18px;
+margin:0;
 }
 
 button{
@@ -120,7 +113,6 @@ font-weight:600;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -156,50 +148,16 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 <label class="title">Class</label>
 
 <div class="options">
-
-<label class="option">
-<input type="radio" name="class" value="8" required> 8
-</label>
-
-<label class="option">
-<input type="radio" name="class" value="9"> 9
-</label>
-
-<label class="option">
-<input type="radio" name="class" value="SSLC"> SSLC
-</label>
-
+<label class="option"><input type="radio" name="class" value="UP" required> UP</label>
+<label class="option"><input type="radio" name="class" value="8"> 8</label>
+<label class="option"><input type="radio" name="class" value="9"> 9</label>
+<label class="option"><input type="radio" name="class" value="SSLC"> SSLC</label>
 </div>
-
 
 <div id="subjectsSection" class="hidden">
 
 <label class="title">Tough Subjects</label>
-
-<div class="options" id="subjects">
-
-<label class="option"><input type="checkbox" value="English"> English</label>
-<label class="option"><input type="checkbox" value="Physics"> Physics</label>
-<label class="option"><input type="checkbox" value="Chemistry"> Chemistry</label>
-<label class="option"><input type="checkbox" value="Biology"> Biology</label>
-<label class="option"><input type="checkbox" value="Maths"> Maths</label>
-<label class="option"><input type="checkbox" value="Arabic"> Arabic</label>
-<label class="option"><input type="checkbox" value="Malayalam"> Malayalam</label>
-<label class="option"><input type="checkbox" value="Hindi"> Hindi</label>
-
-<label class="option subject-social">
-<input type="checkbox" value="Social Science"> Social Science
-</label>
-
-<label class="option subject-history">
-<input type="checkbox" value="History"> History
-</label>
-
-<label class="option subject-geo">
-<input type="checkbox" value="Geography"> Geography
-</label>
-
-</div>
+<div class="options" id="subjects"></div>
 
 </div>
 
@@ -209,15 +167,8 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 <label class="title">Medium</label>
 
 <div class="options">
-
-<label class="option">
-<input type="radio" name="medium" value="English" required> English
-</label>
-
-<label class="option">
-<input type="radio" name="medium" value="Malayalam"> Malayalam
-</label>
-
+<label class="option"><input type="radio" name="medium" value="English" required> English</label>
+<label class="option"><input type="radio" name="medium" value="Malayalam"> Malayalam</label>
 </div>
 
 <button type="submit">Submit Application</button>
@@ -228,38 +179,38 @@ src="https://zvbgebmthcawwybmyzkt.supabase.co/storage/v1/object/public/converted
 
 </div>
 
-
 <script>
 
 const BIN_ID="69ad0adfae596e708f6bc41c"
 const API_KEY="$2a$10$lkC4kFk7MhlaZnTHLacshec/q7QUG/xWMYEY07VpodWh7CjxIsQdy"
 
 const subjectSection=document.getElementById("subjectsSection")
-const history=document.querySelector(".subject-history")
-const geo=document.querySelector(".subject-geo")
-const social=document.querySelector(".subject-social")
+const subjectsDiv=document.getElementById("subjects")
+
+// SUBJECTS
+const subjectsData={
+"UP":["Social Science","Basic Science","English","Malayalam","Arabic","Hindi","Maths"],
+"8":["Social Science","Basic Science","English","Malayalam","Arabic","Hindi","Maths"],
+"9":["English","Physics","Chemistry","Biology","Maths","Hindi","Arabic","Malayalam"],
+"SSLC":["English","Physics","Chemistry","Biology","Maths","Hindi","Arabic","Malayalam"]
+}
 
 document.querySelectorAll('input[name="class"]').forEach(el=>{
-
 el.addEventListener("change",()=>{
 
 subjectSection.classList.remove("hidden")
+subjectsDiv.innerHTML=""
 
-history.style.display="flex"
-geo.style.display="flex"
-social.style.display="flex"
+const selected=el.value
 
-if(el.value==="8"){
-history.style.display="none"
-geo.style.display="none"
-}
-
-if(el.value==="9" || el.value==="SSLC"){
-social.style.display="none"
-}
-
+subjectsData[selected].forEach(sub=>{
+subjectsDiv.innerHTML+=`
+<label class="option">
+<input type="checkbox" value="${sub}"> ${sub}
+</label>`
 })
 
+})
 })
 
 const form=document.getElementById("form")
@@ -269,22 +220,20 @@ form.addEventListener("submit",async function(e){
 
 e.preventDefault()
 
-try{
-
 const subjects=[]
 document.querySelectorAll('#subjects input:checked')
 .forEach(el=>subjects.push(el.value))
 
 const data={
-student:document.getElementById("student").value,
-father:document.getElementById("father").value,
-mother:document.getElementById("mother").value,
-contact:document.getElementById("contact").value,
-whatsapp:document.getElementById("whatsapp").value,
-address:document.getElementById("address").value,
+student:student.value,
+father:father.value,
+mother:mother.value,
+contact:contact.value,
+whatsapp:whatsapp.value,
+address:address.value,
 class:document.querySelector('input[name="class"]:checked').value,
 subjects:subjects,
-school:document.getElementById("school").value,
+school:school.value,
 medium:document.querySelector('input[name="medium"]:checked').value,
 time:new Date().toLocaleString()
 }
@@ -294,7 +243,6 @@ headers:{ "X-Master-Key":API_KEY }
 })
 
 const json=await get.json()
-
 const records=json.record.applications || []
 
 records.push(data)
@@ -310,16 +258,8 @@ body:JSON.stringify({applications:records})
 })
 
 msg.innerText="Application Submitted Successfully"
-
 form.reset()
-
 subjectSection.classList.add("hidden")
-
-}catch(err){
-
-msg.innerText="Submission failed. Please try again."
-
-}
 
 })
 
